@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 本类给定一种原料的混料计划，生成所有可能的运输计划
+ */
 public class TransportPlanGenerator {
 
     private static final int RATIO = 10; // 调整的比例
