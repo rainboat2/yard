@@ -6,38 +6,12 @@ import java.util.List;
 
 public class TransportPlanGenerator {
 
-    public static void main(String[] args) {
-        double[] mixturePlan = {1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 963.8, 0, 0, 0, 0};
-        double sum = sum(mixturePlan);
-
-        System.out.println();
-
-        TransportPlanGenerator t = new TransportPlanGenerator(mixturePlan);
-
-        Integer[] plan = t.rs.get(0).toArray(new Integer[0]);
-        for (int i = plan.length - 1; i > 0; i--)
-            plan[i] -= plan[i-1];
-
-        System.out.println("排班计划：" + Arrays.toString(mixturePlan));
-        System.out.println("运输计划总数: " + t.rs.size());
-        System.out.println("运输计划举例：");
-        for (int nums : plan)
-            System.out.print(((double)nums/100) * sum + ", ");
-
-        System.out.println();
-        System.out.println();
-
-        System.out.println("运行时的部分数据（运输完成百分比，每行表示一个计划）：");
-        for (int i = 0; i < 100; i++)
-            System.out.println(t.rs.get(i));
-
-        System.out.println();
-    }
+    private static final int RATIO = 10; // 调整的比例
 
     private Integer[] process;       // 进度条，每运送一个班次，进度条前进一次
     private int[] marker;            // 标记每个班次进度条最低限度
     private List<List<Integer>> rs;
-    private int count;
+    private int count;               // 结果过多的时候，由于内存限制，rs无法记录所有的结果，但是可以使用count统计结果个数
 
     public TransportPlanGenerator(double[] mixturePlan){
         process = new Integer[mixturePlan.length];
@@ -64,7 +38,7 @@ public class TransportPlanGenerator {
             rs.add(List.of(process));
         else{
             process[i] = (i == 0)? 0 : process[i-1];
-            for (int j = 0; process[i] + j <= 100; j += 10){
+            for (int j = 0; process[i] + j <= 100; j += RATIO){
                 if (process[i] + j < marker[i]) continue;
 
                 process[i] += j;
@@ -80,4 +54,35 @@ public class TransportPlanGenerator {
             sum += d;
         return sum;
     }
+
+    // 测试运行
+    public static void main(String[] args) {
+        double[] mixturePlan = {1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 1067, 963.8, 0, 0, 0, 0};
+        double sum = sum(mixturePlan);
+
+        System.out.println();
+
+        TransportPlanGenerator t = new TransportPlanGenerator(mixturePlan);
+
+        // 将进度条翻译为具体的方案
+        Integer[] plan = t.rs.get(0).toArray(new Integer[0]);
+        for (int i = plan.length - 1; i > 0; i--)
+            plan[i] -= plan[i-1];
+
+        System.out.println("排班计划：" + Arrays.toString(mixturePlan));
+        System.out.println("运输计划总数: " + t.rs.size());
+        System.out.println("运输计划举例：");
+        for (int nums : plan)
+            System.out.print(((double)nums/100) * sum + ", ");
+
+        System.out.println();
+        System.out.println();
+
+        System.out.println("运行时的部分数据（运输完成百分比，每行表示一个计划）：");
+        for (int i = 0; i < 100; i++)
+            System.out.println(t.rs.get(i));
+
+        System.out.println();
+    }
+
 }

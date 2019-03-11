@@ -18,19 +18,25 @@ public class GA {
         init();
         for (int i = 0; i < RUN_TIMES; i++) {
             System.out.println("---第" + (i + 1) + "代进化-----");
+
             List<Individual> matingPool = selection();
             pop.clear();
+
             showResult(matingPool);
+
             Collections.shuffle(matingPool);  // 打乱顺序，增加随机性
+
             for (int j = 0; j < matingPool.size() - 1; j += 2) {
                 Individual a = matingPool.get(j);
                 Individual b = matingPool.get(j + 1);
+                // 执行交叉，变异操作
                 Individual[] id = a.crossover(b);
                 Collections.addAll(pop, a.mutation(), b.mutation(), id[0], id[1]);
             }
             ensureSize();
         }
 
+        // 结束整个算法后，打印排名第一的方案
         List<Individual> matingPool = selection();
         System.out.println(matingPool.get(0).getResult());
     }
@@ -62,7 +68,10 @@ public class GA {
     }
 }
 
-
+/**
+ * 快速排序算法
+ * 当一个个体有多个评价条件时，定义支配关系，使用快排来对个体进行排序
+ */
 class Quick{
 
     public static <T> void sort(List<T> l, Comparator<T> c){

@@ -18,7 +18,8 @@ public class Individual {
     private Transport t = Transport.getInstance();
 
 
-    public Individual(){
+    // 随机生成一个个体（一种方案）
+    Individual(){
         int mn = t.materialNum(), rn = t.routeNum();
 
         chromosome = new int[mn];
@@ -28,13 +29,14 @@ public class Individual {
         fitness = countFitness();
     }
 
+    // 使用制定的编码生成个体
     private Individual(int[] chromosome){
         this.chromosome = chromosome;
         fitness = countFitness();
     }
 
     // 交叉操作
-    public Individual[] crossover(Individual id){
+    Individual[] crossover(Individual id){
         int[] ch1 = this.chromosome.clone();
         int[] ch2 = id.chromosome.clone();
 
@@ -49,7 +51,7 @@ public class Individual {
     }
 
     // 变异操作
-    public Individual mutation(){
+    Individual mutation(){
         int[] ch = this.chromosome.clone();
         for (int i = 0; i < ch.length; i++)
             if (Math.random() < PM)
@@ -58,7 +60,7 @@ public class Individual {
     }
 
 
-    public double fitness(){
+    double fitness(){
         return fitness;
     }
 
@@ -105,6 +107,10 @@ public class Individual {
         return temp / t.routeNum();
     }
 
+    /**
+     * Individual类中chromosome数组为每个方案的对应的编码
+     * 本类用于将编码翻译为便于人阅读的方案
+     */
     public class Result{
 
         // 每个索引代表一条传送带，List中放的为分配到该传送带上的原料编号
